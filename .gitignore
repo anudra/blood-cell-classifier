@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.egg
+
+# Virtual Environments
+venv/
+env/
+.venv
+
+# Node
+node_modules/
+
+# ML Models
+*.h5
+*.keras
+*.pb'
+*.json
+blood_cell_model_savedmodel/
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
+
+# Logs
+logs/
+*.log
+
+# Dataset
+dataset/
+dataset-master/
+dataset2-master/
+images/
+
