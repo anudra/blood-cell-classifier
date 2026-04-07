@@ -109,10 +109,8 @@ View detailed information.
 
 Manage stored predictions.
 
-- Delete single prediction
-- Delete multiple selections
-- Clear all history
-- Confirmation dialog
+- Delete single prediction (instant with success toast)
+- Clear all history (bulk delete) with confirmation dialog
 
 ---
 
