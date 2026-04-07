@@ -1,0 +1,22 @@
+{
+    "class_names": [
+        "LYMPHOCYTE",
+        "MONOCYTE",
+        "NEUTROPHIL",
+        "EOSINOPHIL"
+    ],
+    "image_size": 128,
+    "num_classes": 4,
+    "test_accuracy": 0.7297949194908142,
+    "test_loss": 1.1975886821746826,
+    "input_shape": [
+        128,
+        128,
+        3
+    ],
+    "normalization": {
+        "method": "min-max",
+        "min": 0.0,
+        "max": 1.0
+    }
+}
