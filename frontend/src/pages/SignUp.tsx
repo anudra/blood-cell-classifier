@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useAPI } from '../context/APIContext'
 
 export default function SignUp() {
   const navigate = useNavigate()
+  const { register, isLoading, error: apiError, clearError } = useAPI()
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -10,7 +12,6 @@ export default function SignUp() {
     confirmPassword: '',
   })
   const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -22,44 +23,30 @@ export default function SignUp() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    setLoading(true)
+    clearError()
 
     // Validation
     if (!formData.fullName || !formData.email || !formData.password || !formData.confirmPassword) {
       setError('Please fill in all fields')
-      setLoading(false)
       return
     }
 
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match')
-      setLoading(false)
       return
     }
 
     if (formData.password.length < 8) {
       setError('Password must be at least 8 characters')
-      setLoading(false)
       return
     }
 
     try {
-      // Mock signup - replace with actual API call
-      await new Promise(resolve => setTimeout(resolve, 500))
-      
-      // Store user in localStorage
-      localStorage.setItem('user', JSON.stringify({ 
-        email: formData.email, 
-        fullName: formData.fullName,
-        id: '1' 
-      }))
-      localStorage.setItem('token', 'mock-jwt-token')
-      
+      await register(formData.email, formData.fullName, formData.password)
       navigate('/classify')
     } catch (err) {
-      setError('Sign up failed. Please try again.')
+      // Error is handled by useAPI and stored in apiError
     }
-    setLoading(false)
   }
 
   return (
@@ -81,6 +68,11 @@ export default function SignUp() {
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
               {error}
+            </div>
+          )}
+          {apiError && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+              {apiError}
             </div>
           )}
 
@@ -161,10 +153,10 @@ export default function SignUp() {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={isLoading}
             className="w-full py-2 bg-cyan-500 hover:bg-cyan-600 disabled:bg-gray-400 text-white font-semibold rounded-lg transition"
           >
-            {loading ? 'Creating account...' : 'Create Account'}
+            {isLoading ? 'Creating account...' : 'Create Account'}
           </button>
         </form>
 

@@ -1,42 +1,38 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useAPI } from '../context/APIContext'
 
 export default function Login() {
   const navigate = useNavigate()
+  const { login, isLoading, error, clearError } = useAPI()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [localError, setLocalError] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
-    setLoading(true)
+    setLocalError('')
+    clearError()
 
-    // Mock login - replace with actual API call
-    if (email && password) {
-      try {
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 500))
-        
-        // Store user in localStorage
-        localStorage.setItem('user', JSON.stringify({ email, id: '1' }))
-        localStorage.setItem('token', 'mock-jwt-token')
-        
-        navigate('/classify')
-      } catch (err) {
-        setError('Login failed. Please try again.')
-      }
-    } else {
-      setError('Please fill in all fields')
+    if (!email || !password) {
+      setLocalError('Please fill in all fields')
+      return
     }
-    setLoading(false)
+
+    try {
+      await login(email, password)
+      navigate('/classify')
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Login failed'
+      setLocalError(message)
+    }
   }
+
+  const displayError = localError || error
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-        {/* Header */}
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
             <div className="w-12 h-12 bg-cyan-500 rounded-lg flex items-center justify-center text-white text-2xl">
@@ -47,11 +43,10 @@ export default function Login() {
           <p className="text-gray-600 mt-2">Sign in to your Blood Cell Classifier account</p>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          {error && (
+          {displayError && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-              {error}
+              {displayError}
             </div>
           )}
 
@@ -83,26 +78,15 @@ export default function Login() {
             />
           </div>
 
-          <div className="flex items-center justify-between">
-            <label className="flex items-center">
-              <input type="checkbox" className="rounded border-gray-300 text-cyan-500" />
-              <span className="ml-2 text-sm text-gray-600">Remember me</span>
-            </label>
-            <Link to="#" className="text-sm text-cyan-600 hover:text-cyan-700">
-              Forgot password?
-            </Link>
-          </div>
-
           <button
             type="submit"
-            disabled={loading}
+            disabled={isLoading}
             className="w-full py-2 bg-cyan-500 hover:bg-cyan-600 disabled:bg-gray-400 text-white font-semibold rounded-lg transition"
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            {isLoading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
 
-        {/* Divider */}
         <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-300"></div>
@@ -112,7 +96,6 @@ export default function Login() {
           </div>
         </div>
 
-        {/* Sign Up Link */}
         <div className="text-center">
           <p className="text-gray-600">
             Don't have an account?{' '}
@@ -121,18 +104,6 @@ export default function Login() {
             </Link>
           </p>
         </div>
-
-        {/* Footer */}
-        <p className="text-center text-xs text-gray-500 mt-8">
-          By signing in, you agree to our{' '}
-          <a href="#" className="text-cyan-600 hover:text-cyan-700">
-            Terms of Service
-          </a>
-          {' '}and{' '}
-          <a href="#" className="text-cyan-600 hover:text-cyan-700">
-            Privacy Policy
-          </a>
-        </p>
       </div>
     </div>
   )
