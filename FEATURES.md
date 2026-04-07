@@ -128,4 +128,41 @@ Analytics and metrics.
 
 ---
 
+## 12. User Authentication
+
+Secure user account system.
+
+- Email-based registration
+- Secure login with password hashing
+- Password strength validation
+- Email verification
+- Session management
+- JWT token-based authentication
+
+---
+
+## 13. User Account Management
+
+Personal account features.
+
+- Profile management
+- Change password
+- Logout functionality
+- Account deletion option
+- Email preferences
+
+---
+
+## 14. Prediction History Sync
+
+Cloud-backed prediction storage.
+
+- Per-user prediction history
+- Sync across multiple devices
+- Timestamp tracking
+- Automatic backup
+- History export
+
+---
+
 Last Updated: April 7, 2026

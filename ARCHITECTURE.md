@@ -131,6 +131,29 @@ graph LR
 
 ---
 
+## Authentication Flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant Backend
+    participant Database
+    
+    User->>Frontend: Sign Up / Login
+    Frontend->>Backend: POST /api/auth/register or /login
+    Backend->>Backend: Validate credentials
+    Backend->>Database: Check user exists
+    Database-->>Backend: User data
+    Backend->>Backend: Hash password (if signup)
+    Backend->>Database: Save/Update user
+    Backend-->>Frontend: JWT Token + User Info
+    Frontend->>Frontend: Store token in localStorage
+    Frontend->>User: Redirect to Dashboard
+```
+
+---
+
 ## Database Schema
 
 ```mermaid
@@ -141,10 +164,12 @@ erDiagram
     
     USER {
         uuid id
-        string username
         string email
         string password_hash
+        string full_name
+        boolean email_verified
         timestamp created_at
+        timestamp updated_at
     }
     
     PREDICTION {

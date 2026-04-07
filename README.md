@@ -7,10 +7,11 @@ Upload microscopic image → Model analyzes and classifies → See predictions w
 
 ## Features
 
+- User authentication (Sign up / Login)
 - Real-time prediction (<500ms inference)
 - Drag & drop image upload
 - Confidence score breakdown
-- Prediction history & tracking
+- Prediction history & tracking (per-user, cloud-synced)
 - Statistics dashboard
 - Responsive UI (mobile friendly)
 
@@ -69,9 +70,19 @@ docker-compose up --build
 
 ## API Endpoints
 
-- `POST /api/predict` - Upload & predict
-- `GET /api/history` - Get predictions
-- `GET /api/statistics` - Get stats
+**Authentication**
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User login
+- `POST /api/auth/logout` - User logout
+- `POST /api/auth/refresh` - Refresh token
+
+**Predictions**
+- `POST /api/predict` - Upload & predict (authenticated)
+- `GET /api/history` - Get user predictions (authenticated)
+- `DELETE /api/history/{id}` - Delete prediction (authenticated)
+- `GET /api/statistics` - Get user stats (authenticated)
+
+**System**
 - `GET /api/health` - Health check
 
 ## Documentation
