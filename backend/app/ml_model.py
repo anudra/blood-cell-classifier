@@ -34,11 +34,7 @@ class BloodCellModel:
         try:
             # Load image
             image = Image.open(io.BytesIO(image_data))
-            
-            # Resize to expected input size (usually 224x224 or similar)
             image = image.resize((224, 224))
-            
-            # Convert to RGB if needed
             if image.mode != 'RGB':
                 image = image.convert('RGB')
             
@@ -50,21 +46,16 @@ class BloodCellModel:
             if self.is_real and self.model:
                 probs = self.model.predict(img_array, verbose=0)[0]
             else:
-                # Fallback to random if model not loaded
                 probs = np.random.dirichlet(np.ones(4))
-            
-            # Get predicted class
-            predicted_class_idx = np.argmax(probs)
-            predicted_class = self.classes[predicted_class_idx]
-            confidence = float(probs[predicted_class_idx])
-            
+                
         except Exception as e:
-            print(f"Prediction error: {e}. Using mock predictions.")
+            print(f"Prediction error: {e}. Using fallback predictions.")
             probs = np.random.dirichlet(np.ones(4))
-            predicted_class_idx = np.argmax(probs)
-            predicted_class = self.classes[predicted_class_idx]
-            confidence = float(probs[predicted_class_idx])
         
+        # Get predicted class
+        predicted_class_idx = np.argmax(probs)
+        predicted_class = self.classes[predicted_class_idx]
+        confidence = float(probs[predicted_class_idx])
         processing_time_ms = (time.time() - start_time) * 1000
         
         return {

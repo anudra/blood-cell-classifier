@@ -63,13 +63,6 @@ export const authAPI = {
     if (!response.ok) throw new Error('Login failed')
     return response.json()
   },
-
-  async logout(): Promise<void> {
-    await fetch(`${API_URL}/api/auth/logout`, {
-      method: 'POST',
-      headers: getAuthHeader(),
-    })
-  },
 }
 
 // Predictions API

@@ -64,8 +64,3 @@ async def login(user_data: UserLogin, db: Session = Depends(get_db)):
         "token_type": "bearer",
         "user": UserResponse.from_orm(user)
     }
-
-@router.post("/logout")
-async def logout():
-    # Logout is handled on frontend by removing token
-    return {"message": "Logged out successfully"}

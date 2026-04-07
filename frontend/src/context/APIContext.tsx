@@ -58,6 +58,20 @@ interface APIContextType {
 
 const APIContext = createContext<APIContextType | undefined>(undefined)
 
+// Helper: Convert API response to Prediction object
+const formatPrediction = (p: any): Prediction => ({
+  id: p.id,
+  imageFilename: p.image_filename,
+  predictedClass: p.predicted_class,
+  confidence: p.confidence,
+  eosinophilProb: p.eosinophil_prob,
+  lymphocyteProb: p.lymphocyte_prob,
+  monocyteProb: p.monocyte_prob,
+  neutrophilProb: p.neutrophil_prob,
+  processingTimeMs: p.processing_time_ms,
+  createdAt: p.created_at,
+})
+
 export const APIProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(() => {
     const stored = localStorage.getItem('user')
@@ -91,12 +105,6 @@ export const APIProvider = ({ children }: { children: ReactNode }) => {
         fullName: response.user.full_name,
         createdAt: response.user.created_at,
       })
-      localStorage.setItem('token', response.access_token)
-      localStorage.setItem('user', JSON.stringify({
-        id: response.user.id,
-        email: response.user.email,
-        fullName: response.user.full_name,
-      }))
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Login failed'
       setError(message)
@@ -118,12 +126,6 @@ export const APIProvider = ({ children }: { children: ReactNode }) => {
         fullName: response.user.full_name,
         createdAt: response.user.created_at,
       })
-      localStorage.setItem('token', response.access_token)
-      localStorage.setItem('user', JSON.stringify({
-        id: response.user.id,
-        email: response.user.email,
-        fullName: response.user.full_name,
-      }))
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Registration failed'
       setError(message)
@@ -136,7 +138,6 @@ export const APIProvider = ({ children }: { children: ReactNode }) => {
   const logout = async () => {
     setIsLoading(true)
     try {
-      await authAPI.logout()
       setUser(null)
       setToken(null)
       setPredictions([])
@@ -156,20 +157,8 @@ export const APIProvider = ({ children }: { children: ReactNode }) => {
     setError(null)
     try {
       const response = await predictionsAPI.predict(file)
-      const prediction: Prediction = {
-        id: response.id,
-        imageFilename: response.image_filename,
-        predictedClass: response.predicted_class,
-        confidence: response.confidence,
-        eosinophilProb: response.eosinophil_prob,
-        lymphocyteProb: response.lymphocyte_prob,
-        monocyteProb: response.monocyte_prob,
-        neutrophilProb: response.neutrophil_prob,
-        processingTimeMs: response.processing_time_ms,
-        createdAt: response.created_at,
-      }
       await fetchHistory()
-      return prediction
+      return formatPrediction(response)
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Prediction failed'
       setError(message)
@@ -182,19 +171,7 @@ export const APIProvider = ({ children }: { children: ReactNode }) => {
   const fetchHistory = async () => {
     try {
       const response = await predictionsAPI.getHistory()
-      const formattedPredictions: Prediction[] = response.map(p => ({
-        id: p.id,
-        imageFilename: p.image_filename,
-        predictedClass: p.predicted_class,
-        confidence: p.confidence,
-        eosinophilProb: p.eosinophil_prob,
-        lymphocyteProb: p.lymphocyte_prob,
-        monocyteProb: p.monocyte_prob,
-        neutrophilProb: p.neutrophil_prob,
-        processingTimeMs: p.processing_time_ms,
-        createdAt: p.created_at,
-      }))
-      setPredictions(formattedPredictions)
+      setPredictions(response.map(formatPrediction))
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to fetch history'
       setError(message)

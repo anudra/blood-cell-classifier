@@ -26,17 +26,7 @@ class TokenResponse(BaseModel):
     token_type: str
     user: UserResponse
 
-# Prediction schemas
-class PredictionCreate(BaseModel):
-    image_filename: str
-    predicted_class: str
-    confidence: float
-    eosinophil_prob: float
-    lymphocyte_prob: float
-    monocyte_prob: float
-    neutrophil_prob: float
-    processing_time_ms: float
-
+# Prediction schemas - Single base model with all fields
 class PredictionResponse(BaseModel):
     id: str
     image_filename: str
