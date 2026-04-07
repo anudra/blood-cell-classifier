@@ -53,6 +53,39 @@ App runs on `http://localhost:3000`
 docker-compose up --build
 ```
 
+## Model Setup
+
+⚠️ **Important**: The trained model file is **not included in the repository** (too large for git).
+
+### Get the Model (Choose One):
+
+**Option 1: Run the Training Script** (Recommended)
+```bash
+# Install dependencies
+pip install tensorflow keras numpy pillow
+
+# Run the training notebook
+jupyter notebook model\ training.ipynb
+```
+This will generate `blood_cell_model_best.keras` in the project root.
+
+**Option 2: Download Pre-trained Model**
+- Download from provided link (ask instructor)
+- Place in project root as: `blood_cell_model_best.keras`
+
+### Verify Model is Ready
+The app checks for the model on startup. You'll see:
+```
+✓ Loaded actual trained model from blood_cell_model_best.keras
+```
+
+If model not found:
+```
+Model not found. Using mock predictions.
+```
+
+The system has a **graceful fallback** to random predictions if the model is missing, so the app won't crash—but predictions will be random until you set up the model.
+
 ## Tech Stack
 
 - **Backend**: FastAPI, Python 3.10+
