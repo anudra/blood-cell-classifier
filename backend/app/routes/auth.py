@@ -46,11 +46,23 @@ async def register(user_data: UserRegister, db: Session = Depends(get_db)):
 async def login(user_data: UserLogin, db: Session = Depends(get_db)):
     # Find user
     user = db.query(User).filter(User.email == user_data.email).first()
-    if not user or not verify_password(user_data.password, user.password_hash):
+    
+    if not user:
+        print(f"❌ User not found: {user_data.email}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid email or password"
         )
+    
+    # Verify password
+    if not verify_password(user_data.password, user.password_hash):
+        print(f"❌ Password mismatch for: {user_data.email}")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password"
+        )
+    
+    print(f"✓ Login successful: {user_data.email}")
     
     # Create token
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)

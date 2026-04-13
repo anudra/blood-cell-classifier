@@ -98,13 +98,19 @@ export const APIProvider = ({ children }: { children: ReactNode }) => {
     setError(null)
     try {
       const response = await authAPI.login(email, password)
-      setToken(response.access_token)
-      setUser({
+      const newUser = {
         id: response.user.id,
         email: response.user.email,
         fullName: response.user.full_name,
         createdAt: response.user.created_at,
-      })
+      }
+      // Save to localStorage BEFORE updating state
+      localStorage.setItem('token', response.access_token)
+      localStorage.setItem('user', JSON.stringify(newUser))
+      
+      // Then update state
+      setToken(response.access_token)
+      setUser(newUser)
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Login failed'
       setError(message)
@@ -119,13 +125,19 @@ export const APIProvider = ({ children }: { children: ReactNode }) => {
     setError(null)
     try {
       const response = await authAPI.register(email, fullName, password)
-      setToken(response.access_token)
-      setUser({
+      const newUser = {
         id: response.user.id,
         email: response.user.email,
         fullName: response.user.full_name,
         createdAt: response.user.created_at,
-      })
+      }
+      // Save to localStorage BEFORE updating state
+      localStorage.setItem('token', response.access_token)
+      localStorage.setItem('user', JSON.stringify(newUser))
+      
+      // Then update state
+      setToken(response.access_token)
+      setUser(newUser)
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Registration failed'
       setError(message)
